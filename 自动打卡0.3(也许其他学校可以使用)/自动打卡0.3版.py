@@ -10,7 +10,7 @@ header={"Host": "gw.wozaixiaoyuan.com",#此header为小黄鸟抓包得到的http
             #"Referer": "https://gw.wozaixiaoyuan.com/health/mobile/health/getBatch",
             "Accept-Encoding": "gzip, deflate",
             "Accept-Language": "zh-CN,zh;q=0.9,en-US;q=0.8,en;q=0.7"}
-dk_id='0'
+dk_id='0'#此处是打卡的学校校区ID。稍后会调用函数获取
 
 def GetState():#这个函数调用来测试当前储存的JWSESSION是否过期
     header['Content-Length']='2'
@@ -31,6 +31,7 @@ def login():
     if(json.loads(response.text)["code"]==0):#code为0则登陆成功 此处调用json库将数据解码为python字典格式，更方便这里的判断语句
         file=open('JWSESSION.txt','w')#打开文件，使用覆盖写模式
         file.write(response.headers["JWSESSION"]) #将获取到的JWSESSION参数覆盖写入文件
+        header['JWSESSION']=response.headers["JWSESSION"]#顺便在这里就将新的JWSESSION写入内存header字典中
         file.close()#关闭文件
         return True
     elif(json.loads(response.text)['code']==101):#101表示账号密码错误
